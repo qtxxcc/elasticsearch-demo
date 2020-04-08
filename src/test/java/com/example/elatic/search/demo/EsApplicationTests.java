@@ -34,7 +34,7 @@ class EsApplicationTests {
      * @date 2020/4/8 14:28
      **/
     @Autowired
-    private EsGoodsRepository ESGoodsRepository;
+    private EsGoodsRepository esGoodsRepository;
 
     /**
      * 测试新增
@@ -57,7 +57,7 @@ class EsApplicationTests {
                 "31231231",
                 "16D 945 095",
                 "后 国际品牌 16D 945 095 31231231 16D 945 095");
-        Iterable<EsGoodsEntity> goodsESEntities = ESGoodsRepository.saveAll(Arrays.asList(EsGoodsEntity1, EsGoodsEntity2));
+        Iterable<EsGoodsEntity> goodsESEntities = esGoodsRepository.saveAll(Arrays.asList(EsGoodsEntity1, EsGoodsEntity2));
         log.info("【save】= {}", goodsESEntities);
     }
 
@@ -67,9 +67,9 @@ class EsApplicationTests {
      */
     @Test
     public void update() {
-        ESGoodsRepository.findById(1L).ifPresent(EsGoodsEntity -> {
+        esGoodsRepository.findById(1L).ifPresent(EsGoodsEntity -> {
             EsGoodsEntity.setGoodsName(EsGoodsEntity.getGoodsName() + "\n更新更新更新更新更新");
-            EsGoodsEntity save = ESGoodsRepository.save(EsGoodsEntity);
+            EsGoodsEntity save = esGoodsRepository.save(EsGoodsEntity);
             log.info("【save】= {}", save);
         });
     }
@@ -80,11 +80,11 @@ class EsApplicationTests {
     @Test
     public void delete() {
         // 主键删除
-        ESGoodsRepository.deleteById(1L);
+        esGoodsRepository.deleteById(1L);
         // 对象删除
-        ESGoodsRepository.findById(2L).ifPresent(EsGoodsEntity -> ESGoodsRepository.delete(EsGoodsEntity));
+        esGoodsRepository.findById(2L).ifPresent(EsGoodsEntity -> esGoodsRepository.delete(EsGoodsEntity));
         // 批量删除
-        ESGoodsRepository.deleteAll(ESGoodsRepository.findAll());
+        esGoodsRepository.deleteAll(esGoodsRepository.findAll());
     }
 
     /**
@@ -92,7 +92,7 @@ class EsApplicationTests {
      */
     @Test
     public void select() {
-        ESGoodsRepository.findAll(Sort.by(Sort.Direction.DESC, "goodsId"))
+        esGoodsRepository.findAll(Sort.by(Sort.Direction.DESC, "goodsId"))
                 .forEach(EsGoodsEntity -> log.info("【goods】: {}", JSON.toJSONString(EsGoodsEntity)));
     }
 
@@ -101,7 +101,7 @@ class EsApplicationTests {
      */
     @Test
     public void customSelectRangeOfAge() {
-        ESGoodsRepository.findByGoodsIdBetween(1, 2).forEach(EsGoodsEntity -> log.info("【goods】: {}", JSON.toJSONString(EsGoodsEntity)));
+        esGoodsRepository.findByGoodsIdBetween(1, 2).forEach(EsGoodsEntity -> log.info("【goods】: {}", JSON.toJSONString(EsGoodsEntity)));
     }
 
     /**
@@ -113,7 +113,7 @@ class EsApplicationTests {
         MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery("goodsName", "保时捷跑车V20");
         log.info("【queryBuilder】= {}", queryBuilder.toString());
 
-        ESGoodsRepository.search(queryBuilder).forEach(EsGoodsEntity -> log.info("【goods】: {}", JSON.toJSONString(EsGoodsEntity)));
+        esGoodsRepository.search(queryBuilder).forEach(EsGoodsEntity -> log.info("【goods】: {}", JSON.toJSONString(EsGoodsEntity)));
     }
 
     /**
@@ -129,7 +129,7 @@ class EsApplicationTests {
         queryBuilder.withSort(SortBuilders.fieldSort("goodsId").order(SortOrder.DESC));
         // 分页条件
         queryBuilder.withPageable(PageRequest.of(0, 2));
-        Page<EsGoodsEntity> goodsESEntities = ESGoodsRepository.search(queryBuilder.build());
+        Page<EsGoodsEntity> goodsESEntities = esGoodsRepository.search(queryBuilder.build());
         log.info("【people】总条数 = {}", goodsESEntities.getTotalElements());
         log.info("【people】总页数 = {}", goodsESEntities.getTotalPages());
         goodsESEntities.forEach(EsGoodsEntity -> log.info("【goods】= {}", JSON.toJSONString(EsGoodsEntity)));
@@ -150,7 +150,7 @@ class EsApplicationTests {
 
         log.info("【queryBuilder】= {}", JSON.toJSONString(queryBuilder.build()));
 
-        AggregatedPage<EsGoodsEntity> goodsESEntities = (AggregatedPage<EsGoodsEntity>) ESGoodsRepository.search(queryBuilder.build());
+        AggregatedPage<EsGoodsEntity> goodsESEntities = (AggregatedPage<EsGoodsEntity>) esGoodsRepository.search(queryBuilder.build());
         double avgGoodsId = ((InternalAvg) goodsESEntities.getAggregation("goodsIdAvg")).getValue();
         log.info("【avgGoodsId】= {}", avgGoodsId);
     }
@@ -173,7 +173,7 @@ class EsApplicationTests {
         log.info("【queryBuilder】= {}", JSON.toJSONString(queryBuilder.build()));
 
         // 3. 查询
-        AggregatedPage<EsGoodsEntity> people = (AggregatedPage<EsGoodsEntity>) ESGoodsRepository.search(queryBuilder.build());
+        AggregatedPage<EsGoodsEntity> people = (AggregatedPage<EsGoodsEntity>) esGoodsRepository.search(queryBuilder.build());
 
         // 4. 解析
         // 4.1. 从结果中取出名为 goodsName 的那个聚合，因为是利用String类型字段来进行的term聚合，所以结果要强转为StringTerm类型
